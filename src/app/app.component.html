@@ -1,0 +1,24 @@
+<div class="content" #imageWrapper>
+  <div #image>
+    <app-image [src]="src"
+               [container]="image"
+               [width]="canvasDim.width"
+               [height]="canvasDim.height/2">
+    </app-image>
+  </div>
+  <div class="double-image">
+    <div>
+      <app-image 
+                [src]="src" 
+                [width]="canvasDim.width/2"
+                [height]="canvasDim.height/2">
+      </app-image>
+    </div>
+    <div>
+      <app-image [src]="src"
+                [width]="canvasDim.width/2"
+                [height]="canvasDim.height/2">
+      </app-image>
+    </div>
+  <div>
+</div>
