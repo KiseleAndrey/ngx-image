@@ -23,6 +23,7 @@ export class DrawService implements OnDestroy {
 	private image = new Image();
 	private eventManager: EventManager;
 	private componentAlive = new Subject();
+	private readonly zoomMultiplier =300;
 
 	constructor() { }
 
@@ -91,9 +92,9 @@ export class DrawService implements OnDestroy {
 			const prevWidth = this.calculateImageWidth;
 			const prevHeight = this.calculateImageHeight;
 			this.calculateImageWidth =
-				this.calculateImageWidth + this.calculateImageWidth / (this.scale * 100);
+				this.calculateImageWidth + this.calculateImageWidth / (this.scale * this.zoomMultiplier);
 			this.calculateImageHeight =
-				this.calculateImageHeight + this.calculateImageHeight / (this.scale * 100);
+				this.calculateImageHeight + this.calculateImageHeight / (this.scale * this.zoomMultiplier);
 			if (this.calculateImageWidth < this.originalWidth) {
 				this.imagePositionX -= Math.round(
 					Math.abs(this.calculateImageWidth - prevWidth) / 2
@@ -117,9 +118,9 @@ export class DrawService implements OnDestroy {
 			const prevWidth = this.calculateImageWidth;
 			const prevHeight = this.calculateImageHeight;
 			this.calculateImageWidth =
-				this.calculateImageWidth - this.calculateImageWidth / (this.scale * 100);
+				this.calculateImageWidth - this.calculateImageWidth / (this.scale * this.zoomMultiplier);
 			this.calculateImageHeight =
-				this.calculateImageHeight - this.calculateImageHeight / (this.scale * 100);
+				this.calculateImageHeight - this.calculateImageHeight / (this.scale * this.zoomMultiplier);
 			this.imagePositionX += Math.round((prevWidth - this.calculateImageWidth) / 2);
 			this.imagePositionY += Math.round((prevHeight - this.calculateImageHeight) / 2);
 			this.updateCanvas();
@@ -219,7 +220,9 @@ export class DrawService implements OnDestroy {
 				tap(({ x, x1, y, y1 }) => {
 					const currentDiffX = Math.abs(x - x1);
 					const currentDiffY = Math.abs(y - y1);
-					this.pinchZoom(lastDiffX, currentDiffX, lastDiffY, currentDiffY);
+					if (lastDiffX && lastDiffY) {
+						this.pinchZoom(lastDiffX, currentDiffX, lastDiffY, currentDiffY);
+					}
 					lastDiffX = currentDiffX;
 					lastDiffY = currentDiffY;
 				}),
@@ -238,10 +241,18 @@ export class DrawService implements OnDestroy {
 		lastDiffY: number,
 		currentDiffY: number
 	) {
-		if (currentDiffX > lastDiffX || currentDiffY > lastDiffY) {
-			this.zoomIn();
-		} else if (currentDiffX < lastDiffX || currentDiffY < lastDiffY) {
-			this.zoomOut();
+		if (currentDiffY > currentDiffX) {
+			if (currentDiffY < lastDiffY) {
+				this.zoomOut()
+			} else if (currentDiffY > lastDiffY) {
+				this.zoomIn();
+			}
+		} else {
+			if (currentDiffX < lastDiffX) {
+				this.zoomOut()
+			} else if (currentDiffX > lastDiffX) {
+				this.zoomIn();
+			}
 		}
 	}
 
