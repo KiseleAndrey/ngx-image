@@ -1,4 +1,6 @@
-# UseZoomRotateImage
+# ZoomPanImage
+You can use this component, or take an idea for create yours. 
+With this component you can manipulate picture ( zoom,move) by mouse or gestures (pinch, finger move) 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
 
